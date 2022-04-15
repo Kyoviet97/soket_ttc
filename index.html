@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <title>Client Test</title>
+        <script src="node_modules/socket.io/client-dist/socket.io.js"></script>
+      </head>
+        <body>
+          <div id="connect"></div>
+          <div id="results"></div>
+        <script>
+          // client code here
+          var socket = io.connect('http://192.168.1.84:5000/', { transports : ['websocket'], query: 'userId=something'});
+    
+          socket.on('connect', function() {
+            document.getElementById("connect").innerHTML = "Connect to socket";
+          });
+    
+          socket.on('disconnect', function() {
+            document.getElementById("connect").innerHTML = "Disconnect to socket";
+          });
+    
+          socket.on('message_server', function(data) {
+            document.getElementById("results").innerHTML = data.data;
+          });
+        </script>
+      </body>
+</html>

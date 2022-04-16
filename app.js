@@ -86,7 +86,7 @@ const pushStatus = (data) => {
 }
 
 const changeAccount = (data) => {
-   io.to(`${data.id}`).emit('status', JSON.stringify(data));
+   io.to(`${data.id}`).emit('change-account', JSON.stringify(data));
 }
 
 app.get('/', function (req, res) {

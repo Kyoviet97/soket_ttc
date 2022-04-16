@@ -11,8 +11,10 @@ io.on('connection', function (socket) {
    let objectDevice = {"name": deviceName, "id": deviceId}
    listDevices.push(objectDevice)
    console.log('client connect');
-   deviceName == "Pixel 3" ? idSerer = deviceId : null
+   deviceName == "Manager" ? idSerer = deviceId : null
    updateDevice();
+
+   console.log("====================>>>client connect: ", socket.handshake.query.userId);
 
    socket.on('get-all-dvices', function (){
       updateDevice()
@@ -33,6 +35,22 @@ io.on('connection', function (socket) {
       pushStatus(data)
       
    });
+   
+   socket.on('start-push', function (data){
+      console.log("====================>>>start-push ", data);
+      putStartPush(data.id)
+   });
+
+   socket.on('stop-push-all', function (data){
+      console.log("====================>>>stop-push-all ", data);
+      socket.broadcast.emit('stop-push-all', '');
+   })
+
+   socket.on('change-account', function (data){
+      console.log("====================>>>change-account ", data);
+      changeAccount(data)
+   })
+
 
    socket.on('disconnect', function () {
       for(let i = 0; i < listDevices.length; i++){
@@ -55,12 +73,20 @@ const putStopDevice = (id) => {
    io.to(`${id}`).emit('stop-service', "Stop Now");
 }
 
+const putStartPush = (id) => {
+   io.to(`${id}`).emit('start-push', "");
+}
+
 const updateDevice = () => {
    io.to(`${idSerer}`).emit('update-devices', JSON.stringify(listDevices));
 }
 
 const pushStatus = (data) => {
    io.to(`${idSerer}`).emit('status', JSON.stringify(data));
+}
+
+const changeAccount = (data) => {
+   io.to(`${data.id}`).emit('status', JSON.stringify(data));
 }
 
 app.get('/', function (req, res) {
